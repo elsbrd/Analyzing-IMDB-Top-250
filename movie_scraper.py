@@ -1,6 +1,6 @@
-from bs4 import BeautifulSoup
 import requests
 import json
+from bs4 import BeautifulSoup
 from urllib.parse import urljoin
 
 IMDB_ROOT_URL = 'http://www.imdb.com'
@@ -10,30 +10,29 @@ def get_movie_tags():
     imdb_top_url = urljoin(IMDB_ROOT_URL, '/chart/top')
     response = requests.get(imdb_top_url)
     soup = BeautifulSoup(response.text, 'html.parser')
-    get_tbody = soup.find('tbody', attrs={'class': 'lister-list'})
-    rows = get_tbody.find_all('tr')
-    return rows
+    movie_tags = soup.find('tbody', attrs={'class': 'lister-list'}).find_all('tr')
+    return movie_tags
 
 
 def parse_movie_row(row):
-    movie = row.find_all('td', class_='titleColumn')[0]
-    image_url = row.find_all('td', class_='posterColumn')[0].a.img.get('src')
-    rating = row.find_all('td', class_='ratingColumn imdbRating')[0].strong.text
-    title, movie_url, year, position = get_movie_table_rows(movie)
-    return title, movie_url, year, image_url, position,  rating
+    title = row.find('td', class_='titleColumn')
+    image_url = row.find('td', class_='posterColumn').a.img.get('src')
+    rating = row.find('td', class_='ratingColumn imdbRating').strong.text
+    movie_title, movie_url, year, position = parse_movie_title(title)
+    return movie_title, movie_url, year, image_url, position, rating
 
 
-def get_movie_table_rows(movie):
-    title = movie.a.text
-    year = movie.text.split()[-1].replace('(', '').replace(')', '')
+def parse_movie_title(movie):
+    movie_title = movie.a.text
+    year = movie.text.split()[-1].strip('()')
     movie_url = urljoin(IMDB_ROOT_URL, movie.a['href'])
     position = movie.text.split()[0].replace('.', '')
-    return title, movie_url, year, position
+    return movie_title, movie_url, year, position
 
 
 def extract_movie_props(row):
-    title, movie_url, year, image_url, position,  rating = parse_movie_row(row)
-    return {'Title': title, 'Film url': movie_url, 'Year': year, 'Image url': image_url,
+    movie_title, movie_url, year, image_url, position,  rating = parse_movie_row(row)
+    return {'Title': movie_title, 'Film url': movie_url, 'Year': year, 'Image url': image_url,
             'Position': position, 'Rating': rating}
 
 
