@@ -32,8 +32,12 @@ def parse_movie_title(movie):
 
 def extract_movie_props(row):
     movie_title, movie_url, year, image_url, position,  rating = parse_movie_row(row)
-    return {'Title': movie_title, 'Film url': movie_url, 'Year': year, 'Image url': image_url,
-            'Position': position, 'Rating': rating}
+    return {'movie_title': movie_title, 
+            'movie_url': movie_url, 
+            'year': year, 
+            'image_url': image_url,
+            'position': position, 
+            'rating': rating}
 
 
 def main():
@@ -43,7 +47,7 @@ def main():
         rows = get_movie_tags()
         for row in rows:
             movie_props = extract_movie_props(row)
-            if int(movie_props['Year']) > 2000:
+            if int(movie_props['year']) > 2000:
                 movies_data.append(movie_props)
         json.dump(movies_data, f, indent=2)
 
