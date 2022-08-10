@@ -3,13 +3,13 @@ import requests
 import json
 from urllib.parse import urljoin
 
-url = 'http://www.imdb.com'
+IMDB_ROOT_URL = 'http://www.imdb.com'
 
 
-def get_movie_soup():
-    path = urljoin(url, '/chart/top')
-    page = requests.get(path)
-    soup = BeautifulSoup(page.text, 'html.parser')
+def get_movie_tags():
+    imdb_top_url = urljoin(IMDB_ROOT_URL, '/chart/top')
+    response = requests.get(imdb_top_url)
+    soup = BeautifulSoup(response.text, 'html.parser')
     get_tbody = soup.find('tbody', attrs={'class': 'lister-list'})
     rows = get_tbody.find_all('tr')
     return rows
@@ -26,7 +26,7 @@ def parse_movie_row(row):
 def get_movie_table_rows(movie):
     title = movie.a.text
     year = movie.text.split()[-1].replace('(', '').replace(')', '')
-    movie_url = urljoin(url, movie.a['href'])
+    movie_url = urljoin(IMDB_ROOT_URL, movie.a['href'])
     position = movie.text.split()[0].replace('.', '')
     return title, movie_url, year, position
 
@@ -41,7 +41,7 @@ def main():
     movies_data = list()
 
     with open("movies.json", "w", encoding='utf8') as f:
-        rows = get_movie_soup()
+        rows = get_movie_tags()
         for row in rows:
             movie_props = extract_movie_props(row)
             if int(movie_props['Year']) > 2000:
