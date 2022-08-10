@@ -16,9 +16,9 @@ def get_movie_soup():
 
 
 def parse_movie_row(row):
-    movie = row.find_all('td', class_='titleColumn')[0]
-    image_url = row.find_all('td', class_='posterColumn')[0].a.img.get('src')
-    rating = row.find_all('td', class_='ratingColumn imdbRating')[0].strong.text
+    movie = row.find('td', {'class': 'titleColumn'})
+    image_url = row.find('td', {'class': 'posterColumn'}).a.img.get('src')
+    rating = row.find('td', {'class': 'ratingColumn imdbRating'}).strong.text
     title, movie_url, year, position = get_movie_table_rows(movie)
     return title, movie_url, year, image_url, position,  rating
 
