@@ -1,7 +1,7 @@
 # Analyzing-IMDB-Top-250
 
 
-There is a link from the top 250 films according to IMDB https://www.imdb.com/chart/top
+There is a link of the top 250 films according to IMDB https://www.imdb.com/chart/top
 
 ## Taks
 - Collect movies released after 2000 into a `movies.json` file. For each movie collect the following data (look on the screenshot).
